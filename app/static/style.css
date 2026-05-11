@@ -124,3 +124,35 @@ button:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #4f7cff;
+}
+
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge.high {
+    background: #ff4d4d33;
+    color: #ff4d4d;
+}
+
+.badge.medium {
+    background: #ffb02033;
+    color: #ffb020;
+}
+
+.badge.low {
+    background: #2ecc7133;
+    color: #2ecc71;
+}
