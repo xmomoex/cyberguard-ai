@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="nav">
+    <h1>CyberGuard AI</h1>
+
+    <div style="display:flex;gap:15px">
+        <a href="/dashboard" style="color:white;text-decoration:none">Dashboard</a>
+        <a href="/scans" style="color:white;text-decoration:none">Historial</a>
+        <a href="/login" style="color:white;text-decoration:none"
+           onclick="localStorage.clear()">Logout</a>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div class="grid">
+
+    <div class="card">
+        <h3>Total scans</h3>
+        <h2 id="total">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>High risk</h3>
+        <h2 id="high">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Safe URLs</h3>
+        <h2 id="safe">0</h2>
+    </div>
+
+
+
+    </div>
+
+    <div class="card">
+
+        <h2>Analizar URL</h2>
+
+        <input id="url" placeholder="https://example.com">
+
+        <button onclick="scan()">Analizar</button>
+
+    </div>
+
+    <div id="result"></div>
+
+        <div class="card">
+    <h3>Distribución de riesgos</h3>
+    <canvas id="riskChart"></canvas>
+</div>
+
+</div>
+
+<script>
+async function scan() {
+
+    const url = document.getElementById("url").value
+    const token = localStorage.getItem("token")
+
+    const res = await fetch("/scan/url", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ url })
+    })
+
+    const data = await res.json()
+
+    document.getElementById("result").innerHTML = `
+        <div class="card">
+
+            <h3>Resultado</h3>
+
+            <p><b>URL:</b> ${data.url}</p>
+
+            <p>
+                <span class="badge ${data.risk.toLowerCase()}">
+                    ${data.risk}
+                </span>
+            </p>
+
+            <p><b>Puntuación:</b> ${data.score}</p>
+
+            <div id="ai_box"></div>
+
+        </div>
+    `
+
+    document.getElementById("ai_box").innerHTML =
+        marked.parse(data.ai_explanation)
+}
+
+
+async function loadStats() {
+
+    const token = localStorage.getItem("token")
+
+    const res = await fetch("/scan/history", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    const data = await res.json()
+
+    document.getElementById("total").innerText = data.length
+
+    const high = data.filter(s => s.result === "HIGH").length
+    const safe = data.filter(s => s.result === "SAFE").length
+
+    document.getElementById("high").innerText = high
+    document.getElementById("safe").innerText = safe
+}
+
+loadStats()
+
+
+async function loadChart() {
+
+    const token = localStorage.getItem("token")
+
+    const res = await fetch("/scan/history", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    const data = await res.json()
+
+    const high = data.filter(s => s.result === "HIGH").length
+    const medium = data.filter(s => s.result === "MEDIUM").length
+    const low = data.filter(s => s.result === "LOW").length
+
+    new Chart(document.getElementById("riskChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["HIGH", "MEDIUM", "LOW"],
+            datasets: [{
+                data: [high, medium, low]
+            }]
+        }
+    })
+}
+
+loadChart()
+</script>
+
+</body>
+</html>

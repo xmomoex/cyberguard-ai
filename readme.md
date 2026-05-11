@@ -1,0 +1,147 @@
+🛡️ CyberGuard AI
+📌 Descripción del proyecto
+
+CyberGuard AI es un sistema inteligente de ciberseguridad basado en FastAPI que permite analizar URLs en tiempo real para detectar posibles amenazas como phishing, malware o sitios sospechosos.
+
+El sistema combina:
+
+🔍 Análisis heurístico de URLs
+🧠 Explicaciones generadas por inteligencia artificial
+👤 Autenticación de usuarios con JWT
+📊 Historial de análisis por usuario
+🐳 Despliegue completo con Docker
+
+El objetivo del proyecto es simular una herramienta real de ciberseguridad tipo VirusTotal pero enfocada en aprendizaje y detección básica asistida por IA.
+
+⚙️ Tecnologías utilizadas
+FastAPI
+PostgreSQL
+SQLAlchemy
+JWT Authentication
+Docker & Docker Compose
+HTML + CSS + JavaScript (frontend simple)
+OpenAI API (opcional para explicación IA)
+🚀 Instrucciones de instalación
+1. Clonar el repositorio
+git clone https://github.com/tuusuario/cyberguard-ai.git
+cd cyberguard-ai
+2. Configurar variables de entorno
+
+Crear archivo .env:
+
+DATABASE_URL=postgresql://user:password@db:5432/cyberguard
+SECRET_KEY=supersecretkey
+OPENAI_API_KEY=tu_api_key (opcional)
+3. Levantar el sistema con Docker
+docker-compose up --build
+
+Esto levantará:
+
+Backend FastAPI
+Base de datos PostgreSQL
+4. Acceder a la aplicación
+API: http://localhost:8000
+Swagger UI: http://localhost:8000/docs
+Frontend: http://localhost:8000/
+📡 Uso de la API
+🔐 Autenticación
+Registro
+POST /auth/register
+
+Body:
+
+{
+  "username": "test",
+  "email": "test@email.com",
+  "password": "1234"
+}
+Login
+POST /auth/login
+
+Body:
+
+{
+  "email": "test@email.com",
+  "password": "1234"
+}
+
+Respuesta:
+
+{
+  "access_token": "jwt_token",
+  "token_type": "bearer"
+}
+🧪 Escanear URL
+POST /scan/url
+
+Headers:
+
+Authorization: Bearer <token>
+
+Body:
+
+{
+  "url": "http://example.com"
+}
+
+Respuesta:
+
+{
+  "url": "http://example.com",
+  "risk": "HIGH",
+  "score": 85,
+  "reasons": ["suspicious domain"],
+  "ai_explanation": "Explicación generada por IA..."
+}
+📜 Historial de scans
+GET /scan/history
+
+Headers:
+
+Authorization: Bearer <token>
+🔍 Obtener scan específico
+GET /scan/{id}
+❌ Eliminar scan
+DELETE /scan/{id}
+🐳 Configuración Docker
+docker-compose.yml
+
+El sistema incluye:
+
+Backend FastAPI
+PostgreSQL database
+Levantar todo:
+docker-compose up --build
+Detener:
+docker-compose down
+📚 Documentación API (Swagger)
+
+El proyecto incluye documentación automática:
+
+👉 http://localhost:8000/docs
+
+Características:
+
+Prueba de endpoints en tiempo real
+Autenticación JWT integrada
+Esquemas automáticos con Pydantic
+🧠 Arquitectura del sistema
+Frontend (HTML/JS)
+        ↓
+FastAPI Backend
+        ↓
+Servicios:
+- Scanner URL
+- IA (OpenAI / lógica local)
+- Auth JWT
+        ↓
+PostgreSQL Database
+🔥 Funcionalidades principales
+✔ Registro y login de usuarios
+✔ Autenticación con JWT
+✔ Análisis de URLs sospechosas
+✔ Clasificación de riesgo (LOW / MEDIUM / HIGH)
+✔ Explicación generada por IA
+✔ Historial personalizado por usuario
+✔ API REST completa
+✔ Dockerizado completamente

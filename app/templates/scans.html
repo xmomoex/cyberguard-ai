@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Historial</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="nav">
+    <h1>CyberGuard AI</h1>
+
+    <div style="display:flex;gap:15px">
+        <a href="/dashboard" style="color:white;text-decoration:none">Dashboard</a>
+        <a href="/scans" style="color:white;text-decoration:none">Historial</a>
+        <a href="/login" style="color:white;text-decoration:none"
+           onclick="localStorage.clear()">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Historial de Scans</h2>
+        <p style="color:#9aa4b2">Últimos análisis realizados</p>
+    </div>
+
+    <div class="card">
+
+    <h3>Filtros</h3>
+
+    <select id="filter" onchange="loadScans()">
+        <option value="ALL">Todos</option>
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+    </select>
+
+</div>
+
+    <div id="scans"></div>
+
+</div>
+
+<script>
+
+async function loadScans() {
+
+    const token = localStorage.getItem("token")
+    const filter = document.getElementById("filter")?.value || "ALL"
+
+    const res = await fetch("/scan/history", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    const data = await res.json()
+
+    const filtered = filter === "ALL"
+        ? data
+        : data.filter(s => s.result === filter)
+
+    document.getElementById("scans").innerHTML =
+        filtered.map(scan => `
+            <div class="card">
+
+                <p><b>URL:</b> ${scan.url}</p>
+
+                <span class="badge ${scan.result.toLowerCase()}">
+                    ${scan.result}
+                </span>
+
+                <p>Score: ${scan.risk_score}</p>
+
+            </div>
+        `).join("")
+}
+
+loadScans()
+
+</script>
+
+</body>
+</html>
