@@ -1,7 +1,3 @@
-Perfecto. Te dejo un **README profesional listo para entregar** (nivel proyecto final serio). Solo copia y pega en tu `README.md`.
-
----
-
 # 🛡️ CyberGuard AI
 
 ## 📌 Descripción del proyecto
